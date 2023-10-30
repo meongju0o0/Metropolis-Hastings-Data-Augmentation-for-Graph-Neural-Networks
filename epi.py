@@ -97,7 +97,7 @@ def augment(args, org_edge_index, org_feature, delta_G_e, delta_G_v):
     m = org_edge_index.shape[1]
     num_edge_drop = int(m*delta_G_e)
     #######  flip_edge (A=1)  #######
-    idx = torch.randperm(m, device='cuda')[:m-num_edge_drop]
+    idx = torch.randperm(m, device=device)[:m-num_edge_drop]
     aug_edge_index = org_edge_index[:, idx]
     #################################    
     
@@ -107,7 +107,7 @@ def augment(args, org_edge_index, org_feature, delta_G_e, delta_G_v):
     aug_feature = org_feature.clone()
     node_list = torch.ones(n, 1, device = device)
     ##########  flip_feat  ##########
-    idx = torch.randperm(n, device='cuda')[:num_node_drop]
+    idx = torch.randperm(n, device=device)[:num_node_drop]
     aug_feature[idx] = 0
     node_list[idx] = 0
 

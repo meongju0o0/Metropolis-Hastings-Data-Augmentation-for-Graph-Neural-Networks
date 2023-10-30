@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.autograd import Variable
 
-from torch_geometric.nn import GCNConv, SAGEConv, GATConv, GINConv, SGConv
+from torch_geometric.nn import GCNConv, SAGEConv, GATConv, SimpleConv
 
 import pdb
 import math
@@ -143,14 +143,12 @@ class AGG_NET(torch.nn.Module):
             self.bns = torch.nn.ModuleList()
             self.bns.append(torch.nn.BatchNorm1d(hidden_channels))
             
-        self.convs.append(
-            GCNConv(in_channels, out_channels, bias = False, normalize = False, add_self_loops = True, aggr = 'add'))
+        self.convs.append(SimpleConv())
         
         for _ in range(num_hop - 1):
             if self.use_bn:
                 self.bns.append(torch.nn.BatchNorm1d(hidden_channels))
-            self.convs.append(
-                GCNConv(out_channels, out_channels, bias = False, normalize = False, add_self_loops = True, aggr = 'add'))
+            self.convs.append(SimpleConv())
             
         self.dropout = dropout
         self.reset_parameters()
@@ -159,7 +157,6 @@ class AGG_NET(torch.nn.Module):
         from torch_geometric.nn.inits import ones
         for conv in self.convs:
             conv.reset_parameters()
-            ones(conv.weight)
         
         if self.use_bn:
             for bn in self.bns:
