@@ -123,7 +123,7 @@ class MLP(torch.nn.Module):
     
     def reset_parameters(self):
         for layer in self.layers:
-            layers.reset_parameters()
+            layer.reset_parameters()
     
     def forward(self, x, edge_index):
         for layer in self.layers[:-1]:
